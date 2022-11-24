@@ -1,7 +1,9 @@
-package com.example.load_skin;
+package com.example.load.skin;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.example.game_interfaz.Game;
+import com.example.Screens.options.screen.menu.screen.OptionsMenu;
+import com.example.game.interfaz.Game;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class ShootGun extends Game {
@@ -10,7 +12,8 @@ public class ShootGun extends Game {
 
 	@Override
 	public void create() {
-		gameSkin = new Skin();
+		gameSkin = new Skin(Gdx.files.internal("orange/skin/uiskin.json"));
+		setScreen(new OptionsMenu(this));
 	}
 
 	@Override

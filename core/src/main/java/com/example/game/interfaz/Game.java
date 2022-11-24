@@ -1,4 +1,4 @@
-package com.example.game_interfaz;
+package com.example.game.interfaz;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
