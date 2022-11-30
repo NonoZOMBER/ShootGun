@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.example.Screens.game.screen.GameScreen;
 import com.example.Screens.options.screen.list.score.screen.ListScoreScreen;
+import com.example.Screens.options.screen.nextlevel.screen.LoadLevel;
 import com.example.load.skin.ShootGun;
 import com.example.tools.GifDecoder;
 
@@ -100,7 +101,8 @@ public class OptionsMenu extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                game.setScreen(new GameScreen(game));
+                musicaFondo.dispose();
+                game.setScreen(new LoadLevel(game, 0));
             }
         });
 

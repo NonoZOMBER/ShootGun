@@ -8,7 +8,11 @@ import com.example.load.skin.ShootGun;
  */
 public class AddScoreScreen extends ScreenAdapter {
     private ShootGun game;
-    public AddScoreScreen(ShootGun game) {
+    private int score;
+    public AddScoreScreen(ShootGun game, int score) {
         this.game = game;
+        this.score = score;
     }
+
+
 }
