@@ -42,6 +42,36 @@ public class ListScoreScreen extends ScreenAdapter {
         actualizarVentana();
     }
 
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
+        stage.act();
+        stage.draw();
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        camera.setToOrtho(false, width, height);
+        camera.update();
+        stage = new Stage(new ScreenViewport(camera));
+        actualizarVentana();
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+
+    /*====================================================== METODOS ======================================================*/
+
     private void actualizarVentana() {
         Table table = new Table();
 
@@ -74,33 +104,5 @@ public class ListScoreScreen extends ScreenAdapter {
 
         stage.addActor(table);
         show();
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        camera.setToOrtho(false, width, height);
-        camera.update();
-        stage = new Stage(new ScreenViewport(camera));
-        actualizarVentana();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 }

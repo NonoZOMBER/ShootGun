@@ -27,14 +27,10 @@ public class GameScreen extends ScreenAdapter {
     private Texture heart;
     private TextureRegion heartVivo;
     private TextureRegion heartGastado;
-
     private int score;
-
-    private long timeZombie;
     private long timeSecond;
     private int contSecond;
     private Array<Image> corazones;
-    private boolean inmortal;
     private Table hud;
     private OrthographicCamera camera;
     private int vidas;
@@ -58,10 +54,8 @@ public class GameScreen extends ScreenAdapter {
         corazones = new Array<>(3);
         vidas = 3;
         this.score = score;
-        inmortal = false;
         camera = new OrthographicCamera();
         stage = new Stage(new ScreenViewport(camera));
-        timeZombie = 0;
         timeSecond = 0;
         contSecond = 100;
         cargarHud();
@@ -69,6 +63,49 @@ public class GameScreen extends ScreenAdapter {
         actualizarSeconds();
     }
 
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (TimeUtils.nanoTime() - timeSecond > 1000000000) {
+            contSecond--;
+            actualizarTime();
+            actualizarSeconds();
+            if (contSecond == 0) game.setScreen(new LoadLevel(game, nivel + 1, score));
+        }
+        camera.update();
+        stage.act();
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        camera.setToOrtho(false, width, height);
+        camera.update();
+        stage.clear();
+        actualizarHud();
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        heart.dispose();
+        tShoot.dispose();
+    }
+
+    /*====================================================== METODOS ======================================================*/
     private void actualizarSeconds() {
         timeSecond = TimeUtils.nanoTime();
     }
@@ -115,41 +152,6 @@ public class GameScreen extends ScreenAdapter {
         show();
     }
 
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(TimeUtils.nanoTime() - timeSecond > 1000000000) {
-            contSecond--;
-            actualizarTime();
-            actualizarSeconds();
-            if (contSecond == 0) game.setScreen(new LoadLevel(game, nivel + 1, score));
-        }
-        camera.update();
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        camera.setToOrtho(false, width, height);
-        camera.update();
-        stage.clear();
-        actualizarHud();
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
     private void actualizarTime() {
         timeLabel.setText("Time: " + contSecond);
     }
@@ -158,10 +160,4 @@ public class GameScreen extends ScreenAdapter {
         scoreLabel.setText("Score: " + score);
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-        heart.dispose();
-        tShoot.dispose();
-    }
 }

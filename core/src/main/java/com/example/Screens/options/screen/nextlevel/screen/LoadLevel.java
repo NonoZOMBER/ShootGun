@@ -42,6 +42,31 @@ public class LoadLevel extends ScreenAdapter {
         this(game, nivel, 0);
     }
 
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
+        stage.act();
+        stage.draw();
+    }
+
+    @Override
+    public void hide() {Gdx.input.setInputProcessor(null);}
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+
+
+    /*====================================================== METODOS ======================================================*/
     private void cargarScreen() {
         Table table = new Table();
         Label nivelLabel;
@@ -89,28 +114,5 @@ public class LoadLevel extends ScreenAdapter {
         );
 
         stage.addActor(table);
-    }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        stage.act();
-        stage.draw();
-    }
-
-    @Override
-    public void hide() {Gdx.input.setInputProcessor(null);}
-
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 }

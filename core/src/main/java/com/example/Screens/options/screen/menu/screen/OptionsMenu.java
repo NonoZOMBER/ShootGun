@@ -86,6 +86,14 @@ public class OptionsMenu extends ScreenAdapter {
         Gdx.input.setInputProcessor(null);
     }
 
+    @Override
+    public void dispose() {
+        stage.dispose();
+        batch.dispose();
+    }
+
+    /*====================================================== METODOS ======================================================*/
+
     private void actualizarMenu() {
 
         Table table = new Table();
@@ -142,9 +150,5 @@ public class OptionsMenu extends ScreenAdapter {
         show();
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-        batch.dispose();
-    }
+
 }
