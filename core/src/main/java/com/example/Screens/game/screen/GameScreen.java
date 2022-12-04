@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.example.Screens.game.screen.actores.Soldier;
+import com.example.Screens.game.screen.actores.Zombie;
 import com.example.Screens.options.screen.nextlevel.screen.LoadLevel;
 import com.example.load.skin.ShootGun;
 
@@ -29,6 +31,9 @@ public class GameScreen extends ScreenAdapter {
     private TextureRegion heartGastado;
     private int score;
     private long timeSecond;
+    private long timeZombie;
+    private long timeLevel;
+    private int porcentaje;
     private int contSecond;
     private Array<Image> corazones;
     private Table hud;
@@ -39,10 +44,12 @@ public class GameScreen extends ScreenAdapter {
     Table corazonesLayout;
     Label scoreLabel;
     Label timeLabel;
+    float posJugadorX;
+    float posJugadorY;
 
     public GameScreen(ShootGun game, int nivel, int score) {
         this.game = game;
-
+        cargarDificultad();
         tShoot = new Texture(Gdx.files.internal("sprite_shot.png"));
 
         if (heartVivo == null) {
@@ -61,7 +68,12 @@ public class GameScreen extends ScreenAdapter {
         cargarHud();
         stage.addActor(hud);
         actualizarSeconds();
+        timeZombie = TimeUtils.nanoTime();
+        posJugadorX = camera.viewportWidth / 2;
+        cargarDificultad();
     }
+
+
 
     @Override
     public void show() {
@@ -79,6 +91,9 @@ public class GameScreen extends ScreenAdapter {
             actualizarSeconds();
             if (contSecond == 0) game.setScreen(new LoadLevel(game, nivel + 1, score));
         }
+        if (TimeUtils.nanoTime() - timeZombie > timeLevel) creadorZombies();
+
+
         camera.update();
         stage.act();
         stage.draw();
@@ -144,10 +159,11 @@ public class GameScreen extends ScreenAdapter {
         stage.setViewport(new ScreenViewport(camera));
         hud.setPosition(camera.viewportWidth / 2, camera.viewportHeight - 30);
         if (stage.getActors().isEmpty()) {
-            soldier = new Soldier(camera.viewportWidth / 2, camera.viewportHeight / 3);
+            soldier = new Soldier(camera.viewportWidth / 2, camera.viewportHeight / 3, this);
             stage.addActor(soldier);
             stage.setKeyboardFocus(soldier);
         }
+        stage.addActor(new Zombie(-10, camera.viewportHeight / 3, posJugadorX, this));
         stage.addActor(hud);
         show();
     }
@@ -158,6 +174,50 @@ public class GameScreen extends ScreenAdapter {
 
     private void actualizarScore() {
         scoreLabel.setText("Score: " + score);
+    }
+
+    public void actualizarPosJugador(float x) {
+        posJugadorX = x;
+    }
+
+    public float obtenerPosJugador() {
+        return posJugadorX;
+    }
+
+    private void creadorZombies() {
+        int posivilidad = MathUtils.random(0, 100);
+        if (posivilidad < porcentaje) {
+            switch (MathUtils.random(1)) {
+                case 0:
+                    stage.addActor(new Zombie(-20, camera.viewportHeight / 3, posJugadorX, this));
+                    break;
+                case 1:
+                    stage.addActor(new Zombie(camera.viewportWidth + 20, camera.viewportHeight / 3, posJugadorX, this));
+                    break;
+            }
+        }
+        timeZombie = TimeUtils.nanoTime();
+    }
+
+    private void cargarDificultad() {
+        switch (nivel) {
+            case 0:
+                timeLevel = 1000000000;
+                porcentaje = 20;
+                break;
+            case 1:
+                timeZombie = 100000000;
+                porcentaje = 40;
+                break;
+            case 2:
+                timeZombie = 10000000;
+                porcentaje = 50;
+                break;
+            default:
+                timeZombie = 1000000;
+                porcentaje = 70;
+                break;
+        }
     }
 
 }

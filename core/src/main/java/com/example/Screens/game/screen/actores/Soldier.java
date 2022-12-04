@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.example.Screens.game.screen.GameScreen;
 
 /**
  * Created by Nono on 27/11/2022.
@@ -29,8 +30,10 @@ public class Soldier extends Actor {
     private boolean dispara;
     private long timeDisparo;
     private Sound sound;
+    private GameScreen gameScreen;
 
-    public Soldier(float posx, float posy) {
+    public Soldier(float posx, float posy, GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
         tSoldier = new Texture(Gdx.files.internal("soldier_sprite.png"));
         if (caminarA == null) {
             TextureRegion[] caminarAlante = new TextureRegion[]{
@@ -101,6 +104,24 @@ public class Soldier extends Actor {
             }
         }
 
+
+
+        if (horizontalMovement == HorizontalMovement.RIGHT) {
+            actual = caminarA.getKeyFrame(timeFarmer, true);
+            derecha = true;
+        }
+
+        if (horizontalMovement == HorizontalMovement.LEFT) {
+            actual = caminarD.getKeyFrame(timeFarmer, true);
+            derecha = false;
+        }
+
+        if (TimeUtils.nanoTime() - timeDisparo > 222255555) {
+            dispara = true;
+            actualizarDisparo();
+        }
+
+
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && dispara) {
             Vector3 vector = new Vector3();
             vector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -121,22 +142,7 @@ public class Soldier extends Actor {
             sound.play();
             dispara = false;
         }
-
-        if (horizontalMovement == HorizontalMovement.RIGHT) {
-            actual = caminarA.getKeyFrame(timeFarmer, true);
-            derecha = true;
-        }
-
-        if (horizontalMovement == HorizontalMovement.LEFT) {
-            actual = caminarD.getKeyFrame(timeFarmer, true);
-            derecha = false;
-        }
-
-        if (TimeUtils.nanoTime() - timeDisparo > 222255555) {
-            dispara = true;
-            actualizarDisparo();
-        }
-
+        gameScreen.actualizarPosJugador(getX());
         if (getX() < 0) setX(0);
         if (getX() > 640 - getWidth()) setX(640 - getWidth());
 
