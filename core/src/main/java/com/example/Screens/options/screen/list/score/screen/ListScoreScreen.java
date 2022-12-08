@@ -57,15 +57,6 @@ public class ListScoreScreen extends ScreenAdapter {
     }
 
     @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        camera.setToOrtho(false, width, height);
-        camera.update();
-        stage = new Stage(new ScreenViewport(camera));
-        actualizarVentana();
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }

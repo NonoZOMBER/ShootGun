@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -31,6 +32,15 @@ public class Soldier extends Actor {
     private long timeDisparo;
     private Sound sound;
     private GameScreen gameScreen;
+    private boolean inmortal = false;
+    private boolean muerto = false;
+    private float timeInmortal;
+    private float timeVisible;
+
+    private int countInmortal;
+
+
+    private boolean tocado = false;
 
     public Soldier(float posx, float posy, GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -70,12 +80,19 @@ public class Soldier extends Actor {
 
         addListener(new FarmerInputListener());
 
+        timeVisible = 0f;
+        timeInmortal = 0f;
+        countInmortal = 5;
+
         setX(posx);
         setY(posy);
 
         dispara = true;
 
         this.setSize(45, 50);
+
+        timeInmortal = TimeUtils.nanoTime();
+        timeVisible = TimeUtils.nanoTime();
 
         actualizarDisparo();
     }
@@ -104,7 +121,11 @@ public class Soldier extends Actor {
             }
         }
 
-
+        if (inmortal) {
+            activarInmortalidad(delta);
+        } else {
+            setVisible(true);
+        }
 
         if (horizontalMovement == HorizontalMovement.RIGHT) {
             actual = caminarA.getKeyFrame(timeFarmer, true);
@@ -131,20 +152,24 @@ public class Soldier extends Actor {
                 tiro = 500;
                 actual = reposoD;
                 derecha = true;
-                getStage().addActor(new Shoot(getX() + getWidth(), getY() + (getHeight() / 2) + 1, tiro));
+                Shoot shoot = new Shoot(getX() + getWidth(), getY() + (getHeight() / 2) + 1, tiro);
+                getStage().addActor(shoot);
+                gameScreen.saveShoot(shoot);
             }
             if (Gdx.input.getX() < getX()) {
                 tiro = -500;
                 actual = reposoI;
                 derecha = false;
-                getStage().addActor(new Shoot(getX() - 25, getY() + (getHeight() / 2) + 1, tiro));
+                Shoot shoot = new Shoot(getX() - 25, getY() + (getHeight() / 2) + 1, tiro);
+                getStage().addActor(shoot);
+                gameScreen.saveShoot(shoot);
             }
             sound.play();
             dispara = false;
         }
-        gameScreen.actualizarPosJugador(getX());
+        gameScreen.updatePosPlayer(getX());
         if (getX() < 0) setX(0);
-        if (getX() > 640 - getWidth()) setX(640 - getWidth());
+        if (getX() > 640) setX(640);
 
     }
 
@@ -186,4 +211,41 @@ public class Soldier extends Actor {
         timeDisparo = TimeUtils.nanoTime();
     }
 
+    public boolean getInmortal() {
+        return inmortal;
+    }
+
+    public void setInmortal() {
+        inmortal = !inmortal;
+    }
+
+    private void activarInmortalidad(float delta) {
+        timeVisible += delta;
+        timeInmortal += delta;
+        if (timeInmortal >= 1 && countInmortal != 0) {
+            countInmortal--;
+            timeInmortal = 0;
+        } else if (countInmortal == 0) {
+            inmortal = false;
+            countInmortal = 5;
+        }
+
+        if (timeVisible >= 0.2f) {
+            setVisible(!isVisible());
+            timeVisible = 0;
+        }
+
+    }
+
+    public boolean getMuerto() {
+        return muerto;
+    }
+
+    public Rectangle getShape() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
+
+    public void setMuerto() {
+        this.muerto = true;
+    }
 }

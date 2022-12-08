@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.example.Screens.game.screen.GameScreen;
+import com.example.Screens.options.screen.gameover.screen.GameOver;
 import com.example.Screens.options.screen.menu.screen.OptionsMenu;
-import com.example.Screens.score.screen.AddScoreScreen;
 import com.example.load.skin.ShootGun;
 
 /**
@@ -53,7 +53,9 @@ public class LoadLevel extends ScreenAdapter {
     }
 
     @Override
-    public void hide() {Gdx.input.setInputProcessor(null);}
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
     @Override
     public void show() {
@@ -101,7 +103,7 @@ public class LoadLevel extends ScreenAdapter {
                 if (nivel == 0) {
                     game.setScreen(new OptionsMenu(game));
                 } else if (nivel > 0) {
-                    game.setScreen(new AddScoreScreen(game, score));
+                    game.setScreen(new GameOver(game, score, nivel - 1));
                 }
             }
         });
