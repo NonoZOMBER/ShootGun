@@ -14,4 +14,4 @@ teniendo solo **100 segundos** por nivel.
 ### Usa las flechas de derecha e izquierda para moverte por la pantalla.
 ### Usa el click izquierdo para disparar al enemigo.
 
-### Este juego forma parte de un proyecto de para el Modulo de DAM de Grado Superior.
+### Este juego forma parte de un proyecto para el Modulo de DAM de Grado Superior.
